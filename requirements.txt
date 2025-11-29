@@ -23,3 +23,4 @@ python-multipart==0.0.6
 # Optional: For better development experience
 # python-jose[cryptography]==3.3.0  # For JWT tokens if needed later
 # passlib[bcrypt]==1.7.4  # For password hashing if needed later
+
