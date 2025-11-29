@@ -1,5 +1,5 @@
 # 1. Grab the Python software
-FROM python:3.9
+FROM python:3.10
 
 # 2. Set up a folder for your app inside the server
 WORKDIR /code
@@ -19,4 +19,5 @@ EXPOSE 7860
 # 7. Start the app
 # CRITICAL: Read the note below before saving!
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]
+
 
