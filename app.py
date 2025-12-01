@@ -7,6 +7,11 @@ import google.generativeai as genai
 from typing import List, Optional
 import shutil
 
+# Data structure for the chat request
+class ChatRequest(BaseModel):
+    question: str
+    context: str  # The text from the uploaded PDF/Doc
+
 # Load environment variables
 load_dotenv()
 
@@ -139,6 +144,7 @@ async def summarize_text(request: SummaryRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Summarization failed: {str(e)}")
 
+
 # Quiz generation endpoint
 @app.post("/api/generate-quiz", response_model=QuizResponse)
 async def generate_quiz(request: QuizRequest):
@@ -224,6 +230,32 @@ async def get_progress(user_id: str):
         "average_score": 0,
         "message": "Progress tracking coming soon!"
     }
+
+#chat endpoint
+@app.post("/api/chat")
+async def chat_with_document(request: ChatRequest):
+    try:
+        # We tell Gemini to act like a tutor using ONLY the provided text
+        prompt = f"""
+        You are a helpful AI tutor. Answer the user's question based ONLY on the context provided below.
+        If the answer is not in the context, say "I cannot find the answer in the document."
+        
+        Context:
+        {request.context}
+        
+        User Question: 
+        {request.question}
+        """
+        
+        model = genai.GenerativeModel('gemini-2.5-flash')# Or 'gemini-pro'
+        response = model.generate_content(prompt)
+        
+        return {"answer": response.text}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 
 if __name__ == "__main__":
     import uvicorn
