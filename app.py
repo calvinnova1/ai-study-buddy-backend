@@ -237,14 +237,19 @@ async def chat_with_document(request: ChatRequest):
     try:
         # We tell Gemini to act like a tutor using ONLY the provided text
         prompt = f"""
-        You are a helpful AI tutor. Answer the user's question based ONLY on the context provided below.
-        If the answer is not in the context, say "I cannot find the answer in the document."
+        You are an intelligent AI Study Buddy. Your goal is to help the student learn.
         
-        Context:
+        Context from the student's notes:
         {request.context}
         
-        User Question: 
+        Student's Question: 
         {request.question}
+        
+        Instructions:
+        1. PRIORITIZE the Context above. Answer based on the notes whenever possible.
+        2. If the student asks a general question (like "what else is important?" or "give me examples") that isn't in the notes, USE YOUR GENERAL KNOWLEDGE to help them.
+        3. If you use general knowledge, start your answer with: "This isn't explicitly in your notes, but..."
+        4. Be encouraging and concise.
         """
         
         model = genai.GenerativeModel('gemini-2.5-flash')# Or 'gemini-pro'
